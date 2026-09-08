@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>课堂随记 · 网页采集端</title>
+  <link rel="icon" type="image/png" href="/icon.png">
+  <link rel="stylesheet" href="/classroom.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- 顶部导航栏 -->
+    <header class="topbar">
+      <div class="brand">
+        <span class="logo">▦</span>
+        <div class="titles">
+          <h1>课堂随记 · 采集端</h1>
+          <span class="sub" id="room-name">正在加载教室…</span>
+        </div>
+      </div>
+
+      <div class="schedule-badge" id="schedule-badge">
+        <span class="dot"></span>
+        <span id="lesson-info">正在匹配课表…</span>
+      </div>
+
+      <div class="actions">
+        <div class="class-selector">
+          <label for="class-select">当前班级：</label>
+          <select id="class-select" aria-label="选择班级"></select>
+        </div>
+        <button id="btn-fullscreen" class="btn-icon" title="全屏显示" aria-label="全屏">⛶</button>
+        <button id="btn-settings" class="btn-icon" title="设置本节课" aria-label="设置本节课">⚙</button>
+        <a href="/" class="btn-link" title="返回管理后台">管理后台 ↗</a>
+      </div>
+    </header>
+
+    <!-- 主展示区：座位表 -->
+    <main class="main-content">
+      <div class="classroom-stage">
+        <div class="seating-wrapper">
+          <div id="seating-grid" class="seating-grid">
+            <!-- 动态生成 36 个座位 (6x6) -->
+          </div>
+        </div>
+
+        <div class="podium">
+          <span>讲 台 方 向</span>
+        </div>
+
+        <div class="status-bar" id="status-bar">
+          <span id="status-text">点击学生姓名，直接开始随堂录音</span>
+          <span id="offline-tag" class="badge-offline" hidden>离线待上传: <b id="queue-count">0</b></span>
+        </div>
+      </div>
+    </main>
+
+    <!-- 底部录音控制栏（录音时激活） -->
+    <section class="record-panel" id="record-panel" hidden>
+      <div class="record-content">
+        <div class="record-info">
+          <div class="rec-pulse"></div>
+          <div class="target-student">
+            <span class="label">正在记录</span>
+            <strong id="rec-student-name">学生姓名</strong>
+          </div>
+          <div class="rec-timer" id="rec-timer">00:00</div>
+        </div>
+
+        <div class="record-input">
+          <input type="text" id="rec-note" placeholder="可选：在此补充文字要点或事实细节（按回车或点击完成记录）" autocomplete="off">
+        </div>
+
+        <div class="record-actions">
+          <button id="btn-cancel-rec" class="btn btn-secondary">取消</button>
+          <button id="btn-finish-rec" class="btn btn-primary">完成记录</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 设置弹窗 -->
+    <dialog id="modal-settings" class="modal-dialog">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>设置本节课</h2>
+          <button id="btn-close-settings" class="btn-close" aria-label="关闭">×</button>
+        </div>
+        <div class="modal-body">
+          <p class="modal-tip">统一设置本节课的教室、班级、课节、学科和授课教师。保存后立即用于当前采集。</p>
+
+          <div class="form-group">
+            <label for="input-room">当前教室</label>
+            <select id="input-room"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="input-class">当前班级</label>
+            <select id="input-class"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="input-period">课节</label>
+            <select id="input-period"></select>
+          </div>
+
+          <div class="form-group">
+            <label for="input-subject">学科</label>
+            <input type="text" id="input-subject" placeholder="例如：信息技术">
+          </div>
+
+          <div class="form-group">
+            <label for="input-teacher">授课教师</label>
+            <input type="text" id="input-teacher" placeholder="例如：王海涛">
+          </div>
+          
+          <div class="form-group">
+            <label for="input-server">服务器地址</label>
+            <input type="text" id="input-server" placeholder="留空使用当前访问地址">
+            <small>默认留空即可；跨设备访问时填写服务器局域网地址</small>
+          </div>
+
+          <div class="form-group">
+            <label for="input-token">设备绑定码</label>
+            <input type="password" id="input-token" placeholder="从管理后台 → 教室与设备中生成并获取">
+            <small id="token-status">当前：未配置绑定码（使用登录态访问）</small>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label>
+              <input type="checkbox" id="check-auto-collapse" checked>
+              录音完成后自动重置座位，准备下一位
+            </label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btn-clear-settings" class="btn btn-secondary">清除绑定码</button>
+          <button id="btn-save-settings" class="btn btn-primary">保存并连接</button>
+        </div>
+      </div>
+    </dialog>
+  </div>
+
+  <script src="/classroom.js"></script>
+</body>
+</html>

@@ -1,0 +1,559 @@
+:root {
+  --primary: #4f6ef7;
+  --primary-hover: #3d5be6;
+  --primary-bg: #eef2ff;
+  --danger: #ef4444;
+  --danger-bg: #fee2e2;
+  --text: #1e293b;
+  --text-muted: #64748b;
+  --bg: #f8fafc;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --radius: 12px;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.08), 0 2px 4px -2px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.app-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 顶部导航栏 */
+.topbar {
+  background: var(--card-bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand .logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #667ff0, #3b52c6);
+  color: #fff;
+  font-size: 20px;
+  box-shadow: 0 2px 8px rgba(79, 110, 247, 0.35);
+}
+
+.brand .titles h1 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.brand .titles .sub {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.schedule-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  font-size: 13px;
+  color: var(--text-muted);
+  border: 1px solid #e2e8f0;
+}
+
+.schedule-badge .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.schedule-badge.offline .dot {
+  background: #f59e0b;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.class-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.class-selector select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.class-selector select:focus {
+  border-color: var(--primary);
+}
+
+.btn-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 16px;
+  transition: all 0.2s;
+}
+
+.btn-icon:hover {
+  background: #f1f5f9;
+  color: var(--text);
+}
+
+.btn-link {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 8px;
+  color: var(--primary);
+  text-decoration: none;
+  background: var(--primary-bg);
+  transition: background 0.2s;
+}
+
+.btn-link:hover {
+  background: #dfe7ff;
+}
+
+/* 主展示区 */
+.main-content {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.classroom-stage {
+  width: 100%;
+  max-width: 960px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.podium {
+  text-align: center;
+  border-top: 2px dashed #cbd5e1;
+  padding-top: 12px;
+}
+
+.podium span {
+  display: inline-block;
+  padding: 4px 24px;
+  background: #e2e8f0;
+  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: #475569;
+}
+
+/* 座位网格 (6x6 矩阵，走道分割) */
+.seating-wrapper {
+  overflow-x: auto;
+  padding: 10px 0;
+}
+
+.seating-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr) 20px repeat(2, 1fr) 20px repeat(2, 1fr);
+  gap: 12px 10px;
+  min-width: 600px;
+}
+
+.aisle-gap {
+  grid-row: span 6;
+  border-left: 1px dashed #e2e8f0;
+  margin-left: 9px;
+  pointer-events: none;
+}
+
+.seat-btn {
+  aspect-ratio: 2.2 / 1;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #f8fafc;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.seat-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: var(--primary);
+  background: #f0f4ff;
+  box-shadow: 0 4px 8px rgba(79, 110, 247, 0.15);
+}
+
+.seat-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.seat-btn.empty {
+  background: #f1f5f9;
+  border-color: #e2e8f0;
+  color: #94a3b8;
+  font-weight: normal;
+  font-size: 13px;
+  cursor: default;
+  opacity: 0.6;
+}
+
+.seat-btn.active {
+  background: #fef2f2;
+  border-color: var(--danger);
+  color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+  animation: pulse 1.5s infinite;
+}
+
+.seat-btn .seat-num {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-weight: 400;
+}
+
+/* 状态栏 */
+.status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.badge-offline {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #fef3c7;
+  color: #92400e;
+  font-weight: 500;
+}
+
+/* 底部录音控制栏 */
+.record-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.12);
+  padding: 16px 24px;
+  z-index: 50;
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.record-content {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.record-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 220px;
+}
+
+.rec-pulse {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--danger);
+  box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  animation: recPulse 1.2s infinite;
+}
+
+@keyframes recPulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.target-student .label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.target-student strong {
+  font-size: 16px;
+  color: var(--text);
+}
+
+.rec-timer {
+  font-family: monospace, ui-monospace;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--danger);
+  background: var(--danger-bg);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.record-input {
+  flex: 1;
+}
+
+.record-input input {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.record-input input:focus {
+  border-color: var(--primary);
+}
+
+.record-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn {
+  padding: 8px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #e2e8f0;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 弹窗样式 */
+.modal-dialog {
+  border: none;
+  border-radius: 16px;
+  padding: 0;
+  background: transparent;
+  margin: auto;
+  max-width: 480px;
+  width: calc(100% - 32px);
+  box-shadow: var(--shadow-lg);
+}
+
+.modal-dialog::backdrop {
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h2 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 20px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-tip {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"] {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.form-group small {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: normal;
+  cursor: pointer;
+}
+
+.modal-footer {
+  padding: 14px 20px;
+  background: #f8fafc;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 10px 16px;
+  }
+  .main-content {
+    padding: 12px;
+  }
+  .classroom-stage {
+    padding: 16px;
+  }
+  .seating-grid {
+    gap: 8px 6px;
+  }
+  .seat-btn {
+    font-size: 13px;
+  }
+  .record-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .record-info {
+    justify-content: space-between;
+  }
+}

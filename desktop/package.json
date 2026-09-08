@@ -1,0 +1,67 @@
+{
+  "name": "classroom-orb",
+  "version": "0.2.1",
+  "description": "课堂随记桌面悬浮球",
+  "author": "Classroom Notes",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist:win": "electron-builder --win nsis --x64",
+    "dist:win:portable": "electron-builder --win portable --x64",
+    "dist:win:all": "electron-builder --win nsis portable --x64",
+    "dist:mac": "electron-builder --mac dmg",
+    "dist:mac:arm64": "electron-builder --mac dmg --arm64",
+    "dist:mac:x64": "electron-builder --mac dmg --x64",
+    "dist:mac:universal": "electron-builder --mac dmg --universal"
+  },
+  "devDependencies": {
+    "electron": "^34.2.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "school.classroom.notes",
+    "productName": "课堂随记",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "artifactName": "${productName}-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "*.cjs",
+      "*.html",
+      "*.js",
+      "*.css",
+      "assets/**/*"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "课堂随记"
+    },
+    "portable": {
+      "artifactName": "${productName}-${version}-windows-免安装便携版.${ext}"
+    },
+    "mac": {
+      "category": "public.app-category.education",
+      "icon": "build/icon.png",
+      "target": [
+        "dmg"
+      ],
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "为选中的学生录制课堂表现评价"
+      }
+    },
+    "dmg": {
+      "title": "${productName} 安装程序"
+    }
+  }
+}

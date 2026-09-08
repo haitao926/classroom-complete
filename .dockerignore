@@ -1,0 +1,11 @@
+.env
+.env.*
+data/
+backups/
+node_modules/
+desktop/node_modules/
+desktop/dist/
+desktop/.local-cache/
+.local-cache/
+.DS_Store
+*.log

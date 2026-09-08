@@ -1,0 +1,1 @@
+{"name":"classroom-notes-complete","version":"1.0.0","private":true,"description":"课堂记录、班主任工作台与学校管理后台","engines":{"node":">=24.0.0"},"scripts":{"start":"node --env-file-if-exists=.env server.js","test":"node --test tests/*.test.js","backup":"node backup.js"}}
