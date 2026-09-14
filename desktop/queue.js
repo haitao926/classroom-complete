@@ -1,6 +1,8 @@
 function uploadServer(saved, current) {
+  if (!saved) return current;
   try {
-    return new URL(saved).toString();
+    new URL(saved);
+    return saved;
   } catch {
     return current;
   }

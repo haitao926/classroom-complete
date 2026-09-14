@@ -24,5 +24,20 @@ test('教师端可以调整授权班级座位并临时更换教室，管理员�
   assert.equal((await req('/api/teacher/classroom-moves','GET',undefined,teacher)).data.length,1);
   const adminMoves=await req('/api/admin/classroom-moves','GET',undefined,admin);assert.equal(adminMoves.status,200);assert.equal(adminMoves.data.length,1);assert.equal((await req('/api/admin/classroom-moves/'+moves.data.id+'/cancel','POST',{},admin)).status,200);
   assert.equal((await req('/api/teacher/seat-swaps','POST',{classId:'other',roomId:'room-1',studentId:s1,from:{row:2,col:3},to:{row:2,col:4}},teacher)).status,403);
+  const snapshot=(await req('/api/teacher/state','GET',undefined,teacher)).data.seats;
+  const seats=[{student_id:s1,row:6,col:6}];
+  const save=body=>req('/api/teacher/seat-map','PUT',{classId:cid,roomId:'room-1',previous:snapshot,seats,...body},teacher);
+  assert.equal((await save({classId:'other'})).status,403);
+  assert.equal((await save({seats:[...seats,...seats]})).status,400);
+  assert.equal((await save({seats:[{student_id:'unknown',row:1,col:1}]})).status,400);
+  assert.equal((await save({seats:[{student_id:s1,row:7,col:1}]})).status,400);
+  assert.equal((await save({})).status,200);
+  assert.equal((await save({})).status,409);
+  const after=(await req('/api/teacher/state','GET',undefined,teacher)).data;
+  assert.equal(after.seats.length,1);assert.equal(after.seats[0].row,6);
+  assert.ok(after.seatChanges.some(s=>s.to_row===null));
+  const imported=await req('/api/teacher/seat-map/read','POST',{classId:cid,name:'seats.csv',data:Buffer.from('甲,,,,,\n,,,,,\n乙,,,,,').toString('base64')},teacher);
+  assert.equal(imported.status,200);assert.equal(imported.data.sheets[0].rows.length,3);assert.equal(imported.data.sheets[0].rows[2][0],'乙');
+  assert.equal((await req('/api/teacher/seat-map/read','POST',{classId:'other',name:'seats.csv',data:'YQ=='},teacher)).status,403);
  }finally{if(child)await new Promise(resolve=>{child.once('exit',resolve);child.kill()});fs.rmSync(dir,{recursive:true,force:true})}
 });

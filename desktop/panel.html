@@ -2,18 +2,16 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; media-src blob:"><title>课堂随记</title><link rel="stylesheet" href="panel.css"></head>
 <body>
-<header><b>▦ 课堂随记</b><span id="room"></span><button id="settings" aria-label="设置">设置</button><button id="hide" aria-label="收起">×</button></header>
+<header><b>▦ 课堂随记</b><span id="room"></span><button id="settings" aria-label="选择教室" title="选择教室">⌂</button><button id="adjust" type="button">临时调课</button><button id="hide" aria-label="收起" title="收起">×</button></header>
 <main>
   <div id="room-banner" class="room-banner" role="status" aria-live="polite">当前教室：正在识别…</div>
-  <div class="lesson-banner"><b id="lesson-title">正在匹配当前课次…</b><span id="lesson-meta"></span><button id="adjust" type="button">设置本节课</button></div>
-  <div class="classline"><select id="classes" aria-label="选择班级"></select><small id="match">正在连接…</small></div>
-  <div class="front">讲台方向</div><div id="grid"></div><p id="notice" role="status">点一下姓名，直接录音</p>
-  <section id="capture" hidden><div class="recordline"><div><span class="record-label">正在记录</span><b id="student"></b></div><span id="timer">准备麦克风…</span></div><textarea id="note" placeholder="可选：补充文字评价"></textarea><div class="actions"><button id="cancel">取消</button><button id="finish" class="primary">完成记录</button></div></section>
+  <div class="lesson-banner"><b id="lesson-title">正在匹配当前课次…</b><span id="lesson-meta"></span><small id="match">正在连接…</small></div>
+  <div class="front">讲台方向</div><div id="grid"></div><p id="notice" role="status">点击学生姓名，自动开始录音</p>
+  <section id="capture" hidden><div class="recordline"><div><span class="record-label">正在记录</span><b id="student"></b></div><span id="timer">准备麦克风…</span></div><textarea id="note" placeholder="可选：补充文字评语"></textarea><div class="actions"><button id="cancel">取消</button><button id="finish" class="primary">完成记录</button></div></section>
   <footer><label><input type="checkbox" id="keep"> 保存后保持展开</label><button id="queue" class="queue-button" type="button" hidden></button></footer>
 </main>
-<dialog id="room-dialog"><h2>首次选择教室</h2><p>请选择这台电脑所在的教室。保存后会自动记住，日常无需重复设置。</p><label>当前教室<select id="room-select"><option>正在读取教室列表…</option></select></label><div class="actions"><button class="primary" id="save-room">进入课堂</button></div></dialog>
-<dialog id="config-dialog"><h2>课堂设置</h2><p>选择本节课的教室、班级、课节、学科和授课教师，保存后立即用于当前采集。</p><label>教室<select id="config-room"></select></label><label>班级<select id="config-class"></select></label><label>课节<select id="config-period"></select></label><label>学科<select id="config-subject"></select></label><label>授课教师<select id="config-teacher"></select></label><div class="actions"><button id="close-config">取消</button><button class="primary" id="save-config">保存并开始</button></div></dialog>
-<dialog id="adjust-dialog"><h2>临时调换课</h2><p>当前教室：<b id="adjust-room"></b>。只选择日期和第几节课，时间由学校节次设置自动确定。</p><label>日期<input id="adjust-date" type="date"></label><label>第几节课<select id="adjust-period"></select></label><label>实际课次<select id="adjust-lesson"></select></label><label>调整原因（选填）<textarea id="adjust-reason" placeholder="如：张老师代课、临时换班"></textarea></label><div class="actions"><button id="cancel-adjust">取消</button><button class="primary" id="save-adjust">开始本节课</button></div></dialog>
+<dialog id="room-dialog"><h2>选择当前教室</h2><p>首次安装或更换电脑位置时选择一次，课程和班级会按教室与当前时间自动匹配。</p><label>当前教室<select id="room-select"><option>正在读取教室列表…</option></select></label><div class="actions"><button id="cancel-room">取消</button><button class="primary" id="save-room">进入课堂</button></div></dialog>
+<dialog id="adjust-dialog"><h2>调换本节课内容</h2><p>当前教室：<b id="adjust-room"></b>。目标为 <b id="adjust-target"></b>，教室和固定课表不会改变。</p><label>要上哪一天的内容<input id="adjust-source-date" type="date"></label><label>那一天的第几节<select id="adjust-source-period"></select></label><label>将要加载的课程<select id="adjust-lesson"></select></label><label>调整原因（选填）<textarea id="adjust-reason" placeholder="如：按周三第2节内容上课"></textarea></label><div class="actions"><button id="cancel-adjust">取消</button><button class="primary" id="save-adjust">加载到本节课</button></div></dialog>
 <dialog id="queue-dialog"><h2>待上传记录</h2><div id="queue-list"></div><div class="actions"><button id="close-queue">关闭</button><button class="primary" id="retry-queue">重试全部</button></div></dialog>
 <script src="panel.js"></script>
 </body></html>

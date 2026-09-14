@@ -1,6 +1,6 @@
 {
   "name": "classroom-orb",
-  "version": "0.2.1",
+  "version": "0.2.8",
   "description": "课堂随记桌面悬浮球",
   "author": "Classroom Notes",
   "main": "main.cjs",
