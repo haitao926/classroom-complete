@@ -8,6 +8,7 @@ const orbJs=fs.readFileSync(require.resolve('../desktop/orb.js'),'utf8');
 const main=fs.readFileSync(require.resolve('../desktop/main.cjs'),'utf8');
 const preload=fs.readFileSync(require.resolve('../desktop/preload.cjs'),'utf8');
 const server=fs.readFileSync(require.resolve('../server.js'),'utf8');
+const {nextDragPosition}=require('../desktop/orb-drag');
 
 test('桌面课堂端不提供班级下拉，课程由教室自动匹配',()=>{
   assert.doesNotMatch(html,/id="classes"/);
@@ -63,6 +64,27 @@ test('临时调课状态保留当前节次，便于面板显示实际课程',()=
   assert.match(js,/localAdjustment=\{date,period,lesson:savedLesson/);
   assert.match(js,/\(saved\.students\|\|\[\]\)\.filter/);
   assert.match(server,/students=lessonRoster\(roomId,resolved\.lesson/);
+});
+
+test('悬浮球拖动按光标 X/Y 偏移自由移动到任意屏幕位置',()=>{
+  const bounds={x:80,y:120},start={x:10,y:90},cursor={x:40,y:150};
+  const moved=nextDragPosition(bounds,start,cursor);
+  assert.deepEqual(moved,{x:110,y:180});
+  // The previous main-process formula used bounds.y - start.y (no live cursor Y),
+  // which only allowed horizontal movement. That exact Y result must not pass.
+  assert.notEqual(moved.y,bounds.y-start.y);
+  assert.notEqual(moved.y,bounds.y);
+  assert.match(main,/nextDragPosition\(drag\.bounds,drag\.cursor,c\)/);
+  assert.match(main,/clamp\(n\.x,n\.y,ORB_SIZE,ORB_SIZE\)/);
+  assert.doesNotMatch(main,/clamp\(drag\.bounds\.x\+c\.x-drag\.cursor\.x,drag\.bounds\.y-drag\.cursor\.y/);
+  assert.match(orbJs,/Math\.abs\(e\.screenX-start\.x\)\+Math\.abs\(e\.screenY-start\.y\)/);
+  assert.match(orbJs,/desktop\.call\('drag-start'\)/);
+  assert.match(orbJs,/desktop\.call\('drag'\)/);
+  assert.match(orbJs,/desktop\.call\('drag-end'\)/);
+});
+
+test('悬浮球松手后仍按左右贴边夹紧并记住坐标',()=>{
+  assert.match(main,/case 'drag-end':[\s\S]*orb\.setPosition\(x,b\.y\)[\s\S]*config=\{[\s\S]*x,y:b\.y\}[\s\S]*write\('settings\.json',config\)/);
 });
 
 test('Mac 麦克风权限由主进程按系统状态管理，避免重复触发授权',()=>{
