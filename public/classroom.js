@@ -209,13 +209,15 @@
         state.currentSource = res.currentSource || null;
         state.currentPeriod = res.currentPeriod || null;
         state.periods = res.periods || [];
-        state.currentClassId = state.currentLesson ? state.currentLesson.class_id : (state.currentClassId || state.classes[0]?.id);
+        state.currentClassId = state.currentLesson ? state.currentLesson.class_id : null;
 
         $('#room-name').textContent = state.room ? state.room.name : '未知教室';
         renderLessonInfo();
         renderClassOptions();
         renderSeats();
-        showToast('就绪：点击学生姓名即可录音');
+        if (state.currentConflict?.length) showToast('课表冲突，请联系管理员');
+        else if (!state.currentLesson) showToast('当前没有匹配课次，座位表为空');
+        else showToast('就绪：点击学生姓名即可录音');
       } else {
         // 用户会话模式（备用）
         const userState = await api('/api/state');
@@ -259,7 +261,7 @@
       info.textContent = `第${state.currentLesson.period || '?'}节 · ${state.currentLesson.subject}（${state.currentLesson.teacher || '教师'}）${state.currentSource === 'temporary' ? ' · 临时调课' : ''}`;
     } else {
       badge.classList.add('offline');
-      info.textContent = '当前节次无排课 (可手动选择班级)';
+      info.textContent = '当前节次无排课，座位表为空';
     }
   }
 
@@ -274,7 +276,7 @@
       if (c.id === state.currentClassId) opt.selected = true;
       sel.appendChild(opt);
     });
-    sel.disabled = state.isDeviceMode && (!!state.currentLesson || !!state.currentConflict?.length);
+    sel.disabled = state.isDeviceMode;
   }
 
   // 渲染 6x6 座位表
